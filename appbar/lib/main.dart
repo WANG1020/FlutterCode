@@ -1,87 +1,77 @@
-import 'dart:developer';
+// Flutter code sample for AppBar
+
+// This sample shows an [AppBar] with two simple actions. The first action
+// opens a [SnackBar], while the second action navigates to a new page.
 
 import 'package:flutter/material.dart';
 
-void main() => runApp(new MyApp());
+void main() => runApp(MyApp());
 
+/// This Widget is the main application widget.
 class MyApp extends StatelessWidget {
-  Widget titleSection = new Container(
-    padding: const EdgeInsets.all(32.0),
-    child: new Row(
-      children: <Widget>[
-        new Expanded(
-            child: new Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                new Container(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: new Text(
-                    'This is Demo',
-                    style: new TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                new Text(
-                  'Hello,Good morning',
-                  style: new TextStyle(
-                    color: Colors.grey[500],
-                  ),
-                )
-              ],
-            ),
-        ),
-        new Icon(
-          Icons.star,
-          color: Colors.red[500],
-        ),
-        new Text('41'),
-      ],
-    ),
-  );
-
-  BuildContext _context;
-
-  Column buildButtonColumn(IconData icon,String label) {
-    Color color = Theme.of(_context).primaryColor;
-    return new Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        new Icon(
-          icon,
-          color: color,
-        ),
-        new Container(
-//          margin: ,
-        ),
-      ],
-    );
-  }
-
-
+  static const String _title = 'Flutter Code Sample';
 
   @override
   Widget build(BuildContext context) {
-    _context = context;
-    return new MaterialApp(
-      theme: new ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: new Scaffold(
+    return MaterialApp(
+      title: _title,
+      home: MyStatelessWidget(),
+    );
+  }
+}
+
+final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+final SnackBar snackBar = const SnackBar(content: Text('Showing Snackbar'));
+
+void openPage(BuildContext context) {
+  Navigator.push(context, MaterialPageRoute(
+    builder: (BuildContext context) {
+      return Scaffold(
         appBar: AppBar(
-          title: Text('Flutter layout demo'),
+          title: const Text('Next page'),
         ),
-        body: new ListView(
-          children: <Widget>[
-            new Image.asset(
-              'images/lake.jpg',
-              width: 600,
-              height: 240,
-              fit: BoxFit.cover,
-            ),
-            titleSection,
-          ],
+        body: const Center(
+          child: Text(
+            'This is the next page',
+            style: TextStyle(fontSize: 24),
+          ),
+        ),
+      );
+    },
+  ));
+}
+
+/// This is the stateless widget that the main application instantiates.
+class MyStatelessWidget extends StatelessWidget {
+  MyStatelessWidget({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: scaffoldKey,
+      appBar: AppBar(
+        title: const Text('AppBar Demo'),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.add_alert),
+            tooltip: 'Show Snackbar',
+            onPressed: () {
+              scaffoldKey.currentState.showSnackBar(snackBar);
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.navigate_next),
+            tooltip: 'Next page',
+            onPressed: () {
+              openPage(context);
+            },
+          ),
+        ],
+      ),
+      body: const Center(
+        child: Text(
+          'This is the home page',
+          style: TextStyle(fontSize: 24),
         ),
       ),
     );
